@@ -16,8 +16,8 @@ class GameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<GameBloc, GameState>(
       listener: (context, state) {
-        if (state.status == GameStatus.won) {
-          context.go('/won');
+        if (state.status == GameStatus.playing) {
+          context.go('/lost');
         } else if (state.status == GameStatus.lost) {
           context.go('/lost');
         }
