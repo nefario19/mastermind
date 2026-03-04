@@ -4,6 +4,8 @@ import 'package:mastermind/bloc/game_bloc.dart';
 import 'package:mastermind/models/game_event.dart';
 
 class ColorPicker extends StatelessWidget {
+  const ColorPicker({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

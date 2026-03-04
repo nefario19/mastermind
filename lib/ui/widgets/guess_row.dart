@@ -23,7 +23,7 @@ class GuessRow extends StatelessWidget {
           child: Text(
             '$attemptNumber',
             style: const TextStyle(
-              color: Color(0xFF424242),
+              color: Color.fromARGB(255, 255, 255, 255),
               fontSize: 12,
               fontFamily: 'monospace',
               fontWeight: FontWeight.w600,

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mastermind/bloc/game_bloc.dart';
+import 'package:mastermind/bloc/highscore_bloc.dart';
 import 'package:mastermind/models/game_event.dart';
 import 'package:mastermind/models/game_state.dart';
+import 'package:mastermind/models/highscore_event.dart';
 
 class LostView extends StatefulWidget {
   const LostView({super.key});
@@ -46,6 +48,8 @@ class _LostViewState extends State<LostView> with TickerProviderStateMixin {
     Future.delayed(const Duration(milliseconds: 200), () {
       _slideController.forward();
     });
+
+    context.read<HighscoreBloc>().add(HighscoreEvent.loadHighscores());
   }
 
   @override
