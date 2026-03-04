@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mastermind/data/database.dart';
+import 'package:mastermind/locator.dart';
 import 'package:mastermind/models/game_event.dart';
 import 'package:mastermind/models/game_state.dart';
 import 'package:mastermind/models/game_status.dart';
@@ -19,6 +21,7 @@ const List<Color> colorOptions = [
 ];
 
 class GameBloc extends Bloc<GameEvent, GameState> {
+  final db = locator<AppDatabase>();
   GameBloc({List<Color>? secretCode})
     : super(
         secretCode != null
@@ -69,14 +72,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     final newCurrentGuess = List<Color?>.from(state.currentGuess);
     newCurrentGuess[state.selectedSlot] = event.color;
 
-    print('Adding color for slot ${state.selectedSlot}');
-
     final nextSlot = (state.selectedSlot + 1).clamp(0, 3);
 
     emit(state.copyWith(currentGuess: newCurrentGuess, selectedSlot: nextSlot));
-
-    print('Color selected: ${event.color}');
-    print('Current guess: ${state.currentGuess}');
   }
 
   void _onGuessSubmitted(GuessSubmitted event, Emitter<GameState> emit) {
@@ -116,6 +114,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
     GameStatus newStatus = GameStatus.playing;
     if (blackPins.length == 4) {
+      db.insertScore((10 - allGuessesInSession.length) * 10);
       newStatus = GameStatus.won;
     } else if (allGuessesInSession.length >= 10) {
       newStatus = GameStatus.lost;
@@ -128,10 +127,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         selectedSlot: 0,
         status: newStatus,
       ),
-    );
-
-    print(
-      'Black pins: $blackPins \n White pins: $whitePinCount \n Colors: $filledGuess',
     );
   }
 

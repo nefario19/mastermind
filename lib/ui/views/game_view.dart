@@ -16,7 +16,7 @@ class GameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<GameBloc, GameState>(
       listener: (context, state) {
-        if (state.status == GameStatus.playing) {
+        if (state.status == GameStatus.won) {
           context.go('/won');
         } else if (state.status == GameStatus.lost) {
           context.go('/lost');
@@ -52,7 +52,7 @@ class GameScreen extends StatelessWidget {
                           : ListView.separated(
                               padding: const EdgeInsets.only(top: 12),
                               itemCount: state.guesses.length,
-                              separatorBuilder: (_, __) =>
+                              separatorBuilder: (_, _) =>
                                   const SizedBox(height: 10),
                               itemBuilder: (context, index) => GuessRow(
                                 guess: state.guesses[index],
@@ -60,19 +60,12 @@ class GameScreen extends StatelessWidget {
                               ),
                             ),
                     ),
-
                     const SizedBox(height: 12),
-
                     ActiveGuessRow(currentGuess: state.currentGuess),
-
                     const SizedBox(height: 16),
-
                     SubmitButton(),
-
                     const SizedBox(height: 16),
-
                     ColorPicker(),
-
                     const SizedBox(height: 16),
                   ],
                 ),

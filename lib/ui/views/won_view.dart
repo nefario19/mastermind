@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mastermind/bloc/game_bloc.dart';
+import 'package:mastermind/bloc/highscore_bloc.dart';
 import 'package:mastermind/models/game_event.dart';
 import 'package:mastermind/models/game_state.dart';
+import 'package:mastermind/models/highscore_event.dart';
+import 'package:mastermind/ui/widgets/score_card.dart';
 
 class WonView extends StatefulWidget {
   const WonView({super.key});
@@ -45,6 +48,8 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
     Future.delayed(const Duration(milliseconds: 150), () {
       _scaleController.forward();
     });
+
+    context.read<HighscoreBloc>().add(const HighscoreEvent.loadHighscores());
   }
 
   @override
@@ -59,16 +64,11 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
     return BlocBuilder<GameBloc, GameState>(
       builder: (context, state) {
         final attempts = state.guesses.length;
-        final score = (10 - attempts + 1) * 100;
-
         return Scaffold(
           backgroundColor: const Color(0xFF0A1A0A),
           body: Stack(
             children: [
-              // Grid background
               CustomPaint(painter: _GreenGridPainter(), size: Size.infinite),
-
-              // Green glow top
               Positioned(
                 top: -80,
                 left: 0,
@@ -94,7 +94,7 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
                     children: [
                       const Spacer(flex: 2),
 
-                      // Trophy
+                      // trophy
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: ScaleTransition(
@@ -107,13 +107,13 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
                       ),
                       const SizedBox(height: 16),
 
-                      // YOU WIN title
+                      // you win title
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: ScaleTransition(
                           scale: _scaleAnimation,
                           child: const Text(
-                            'JE\nWON!',
+                            'YOU\nWON!',
                             style: TextStyle(
                               fontFamily: 'monospace',
                               fontSize: 72,
@@ -132,7 +132,7 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Text(
-                          'Code gekraakt in $attempts ${attempts == 1 ? 'poging' : 'pogingen'}.',
+                          'Code hacked in $attempts ${attempts == 1 ? 'attempts' : 'attempts'}.',
                           style: const TextStyle(
                             fontSize: 16,
                             color: Color(0xFF9E9E9E),
@@ -144,59 +144,9 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
 
                       const SizedBox(height: 20),
 
-                      // Score card
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(
-                                0xFF00C853,
-                              ).withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(14),
-                            color: const Color(
-                              0xFF00C853,
-                            ).withValues(alpha: 0.05),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _ScoreTile(
-                                label: 'SCORE',
-                                value: '$score',
-                                highlight: true,
-                              ),
-                              Container(
-                                width: 1,
-                                height: 40,
-                                color: const Color(0xFF2E2E2E),
-                              ),
-                              _ScoreTile(
-                                label: 'POGINGEN',
-                                value: '$attempts / 10',
-                              ),
-                              Container(
-                                width: 1,
-                                height: 40,
-                                color: const Color(0xFF2E2E2E),
-                              ),
-                              _ScoreTile(
-                                label: 'RATING',
-                                value: attempts <= 3
-                                    ? '🔥'
-                                    : attempts <= 6
-                                    ? '👍'
-                                    : '😅',
-                              ),
-                            ],
-                          ),
-                        ),
+                      // score card
+                      ScoreCard(
+                        fadeAnimation: _fadeAnimation,
                       ),
 
                       const Spacer(flex: 3),
@@ -232,7 +182,7 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
                                 ),
                                 child: const Center(
                                   child: Text(
-                                    'SPEEL OPNIEUW',
+                                    'PLAY AGAIN',
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w800,
@@ -263,7 +213,7 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
                                 ),
                                 child: const Center(
                                   child: Text(
-                                    '>> Taif aannemen 😏 <<',
+                                    '>> Hire Taif 😏 <<',
                                     style: TextStyle(
                                       color: Color(0xFF00C853),
                                       fontWeight: FontWeight.w700,
@@ -287,44 +237,6 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
           ),
         );
       },
-    );
-  }
-}
-
-class _ScoreTile extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool highlight;
-
-  const _ScoreTile({
-    required this.label,
-    required this.value,
-    this.highlight = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: highlight ? 24 : 20,
-            fontWeight: FontWeight.w800,
-            color: highlight ? const Color(0xFF00C853) : Colors.white,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Color(0xFF616161),
-            letterSpacing: 1.5,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 }
