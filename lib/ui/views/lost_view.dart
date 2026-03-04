@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mastermind/bloc/game_bloc.dart';
 import 'package:mastermind/bloc/highscore_bloc.dart';
-import 'package:mastermind/models/game_event.dart';
 import 'package:mastermind/models/game_state.dart';
 import 'package:mastermind/models/highscore_event.dart';
+import 'package:mastermind/ui/widgets/hiring_button.dart';
+import 'package:mastermind/ui/widgets/play_again.dart';
 
 class LostView extends StatefulWidget {
   const LostView({super.key});
@@ -187,71 +187,13 @@ class _LostViewState extends State<LostView> with TickerProviderStateMixin {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  context.read<GameBloc>().add(
-                                    const GameEvent.gameStarted(),
-                                  );
-                                  context.go('/');
-                                },
-                                child: Container(
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE53935),
-                                    borderRadius: BorderRadius.circular(14),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(
-                                          0xFFE53935,
-                                        ).withValues(alpha: 0.4),
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 8),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      'PROBEER OPNIEUW',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 15,
-                                        letterSpacing: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              PlayAgain(
+                                fadeAnimation: _fadeAnimation,
+                                backgroundColor: Color(0xFFE53935),
+                                textColor: Colors.white,
                               ),
-
                               const SizedBox(height: 12),
-
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color: const Color(
-                                        0xFFE53935,
-                                      ).withValues(alpha: 0.4),
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      '>> Taif aannemen 😏 <<',
-                                      style: TextStyle(
-                                        color: Color(0xFFE53935),
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 15,
-                                        letterSpacing: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              HiringButton(color: Color(0xFFE53935)),
                             ],
                           ),
                         ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mastermind/bloc/game_bloc.dart';
 import 'package:mastermind/bloc/highscore_bloc.dart';
-import 'package:mastermind/models/game_event.dart';
 import 'package:mastermind/models/game_state.dart';
 import 'package:mastermind/models/highscore_event.dart';
+import 'package:mastermind/ui/widgets/hiring_button.dart';
+import 'package:mastermind/ui/widgets/play_again.dart';
 import 'package:mastermind/ui/widgets/score_card.dart';
 
 class WonView extends StatefulWidget {
@@ -141,93 +141,16 @@ class _WonViewState extends State<WonView> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
-                      // score card
-                      ScoreCard(
-                        fadeAnimation: _fadeAnimation,
-                      ),
-
+                      ScoreCard(fadeAnimation: _fadeAnimation),
                       const Spacer(flex: 3),
-
-                      // Buttons
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Play again
-                            GestureDetector(
-                              onTap: () {
-                                context.read<GameBloc>().add(
-                                  const GameEvent.gameStarted(),
-                                );
-                                context.go('/');
-                              },
-                              child: Container(
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF00C853),
-                                  borderRadius: BorderRadius.circular(14),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF00C853,
-                                      ).withValues(alpha: 0.35),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 8),
-                                    ),
-                                  ],
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'PLAY AGAIN',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 15,
-                                      letterSpacing: 1.5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            // Hire me button 😏
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: const Color(
-                                      0xFF00C853,
-                                    ).withValues(alpha: 0.4),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    '>> Hire Taif 😏 <<',
-                                    style: TextStyle(
-                                      color: Color(0xFF00C853),
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 15,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      PlayAgain(
+                        fadeAnimation: _fadeAnimation,
+                        backgroundColor: Color(0xFF00C853),
+                        textColor: Colors.black,
                       ),
-
+                      const SizedBox(height: 12),
+                      HiringButton(color: Color(0xFF00C853)),
                       const SizedBox(height: 40),
                     ],
                   ),
