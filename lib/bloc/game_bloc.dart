@@ -7,6 +7,17 @@ import 'package:mastermind/models/game_state.dart';
 import 'package:mastermind/models/game_status.dart';
 import 'package:mastermind/models/guess.dart';
 
+const List<Color> colorOptions = [
+  Colors.red,
+  Colors.white,
+  Colors.blue,
+  Colors.orange,
+  Colors.yellow,
+  Colors.green,
+  Colors.purple,
+  Colors.pink,
+];
+
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({List<Color>? secretCode})
     : super(
@@ -27,17 +38,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   static GameState _initialState() {
-    final List<Color> colorOptions = [
-      Colors.red,
-      Colors.black,
-      Colors.blue,
-      Colors.orange,
-      Colors.yellow,
-      Colors.green,
-      Colors.purple,
-      Colors.pink,
-    ];
-
     final List<Color> secretCode = [];
     int numberOfColorsChosen = 0;
     final gameColors = List<Color>.from(colorOptions);
@@ -58,13 +58,25 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   void _onSlotSelected(SlotSelected event, Emitter<GameState> emit) {
-    emit(state.copyWith(selectedSlot: event.index));
+    final newCurrentGuess = List<Color?>.from(state.currentGuess);
+    newCurrentGuess[event.index] = null;
+    emit(
+      state.copyWith(currentGuess: newCurrentGuess, selectedSlot: event.index),
+    );
   }
 
   void _onColorSelected(ColorSelected event, Emitter<GameState> emit) {
     final newCurrentGuess = List<Color?>.from(state.currentGuess);
     newCurrentGuess[state.selectedSlot] = event.color;
-    emit(state.copyWith(currentGuess: newCurrentGuess));
+
+    print('Adding color for slot ${state.selectedSlot}');
+
+    final nextSlot = (state.selectedSlot + 1).clamp(0, 3);
+
+    emit(state.copyWith(currentGuess: newCurrentGuess, selectedSlot: nextSlot));
+
+    print('Color selected: ${event.color}');
+    print('Current guess: ${state.currentGuess}');
   }
 
   void _onGuessSubmitted(GuessSubmitted event, Emitter<GameState> emit) {
@@ -112,9 +124,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     emit(
       state.copyWith(
         guesses: allGuessesInSession,
-        currentGuess: newGuess.colors,
+        currentGuess: [null, null, null, null],
+        selectedSlot: 0,
         status: newStatus,
       ),
+    );
+
+    print(
+      'Black pins: $blackPins \n White pins: $whitePinCount \n Colors: $filledGuess',
     );
   }
 

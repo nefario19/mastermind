@@ -1,19 +1,16 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mastermind/bloc/game_bloc.dart';
+import 'package:mastermind/router.dart';
 
 void main() {
   runApp(
-    MaterialApp(
-      home: Scaffold(body: Something(), backgroundColor: Colors.blueGrey),
+    BlocProvider(
+      create: (_) => GameBloc(),
+      child: MaterialApp.router(
+        routerConfig: router,
+        debugShowCheckedModeBanner: false,
+      ),
     ),
   );
-}
-
-class Something extends StatelessWidget {
-  const Something({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column();
-  }
 }
