@@ -1,7 +1,6 @@
 name: mastermind
 description: "A new Flutter project."
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -10,35 +9,43 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
   drift: ^2.32.0
   freezed_annotation: ^3.1.0
   flutter_bloc: ^9.1.1
-  bloc_test: ^10.0.0
   go_router: ^17.1.0
   json_serializable: ^6.13.0
   path: ^1.9.1
   path_provider: ^2.1.5
   sqlite3_flutter_libs: ^0.6.0+eol
-  drift_dev: ^2.32.0
   get_it: ^9.2.1
   url_launcher: ^6.3.2
-  mockito: ^5.6.3
+  flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   freezed: ^3.2.5
   build_runner: ^2.11.1
+  drift_dev: ^2.32.0
+  mockito: ^5.6.3
+  bloc_test: ^10.0.0
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^6.0.0
 
-
 flutter:
-
   uses-material-design: true
+  assets:
+    - assets/mastermind_icon.png
 
+flutter_native_splash:
+  color: "#0D0D0D"
+  android_12:
+    color: "#0D0D0D"
+  android: true
+  ios: true
 
-
-
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/mastermind_icon.png"
