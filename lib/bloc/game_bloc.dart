@@ -21,9 +21,10 @@ const List<Color> colorOptions = [
 ];
 
 class GameBloc extends Bloc<GameEvent, GameState> {
-  final db = locator<AppDatabase>();
-  GameBloc({List<Color>? secretCode})
-    : super(
+  final AppDatabase db;
+  GameBloc({List<Color>? secretCode, AppDatabase? database})
+    : db = database ?? locator<AppDatabase>(),
+      super(
         secretCode != null
             ? GameState(
                 secretCode: secretCode,

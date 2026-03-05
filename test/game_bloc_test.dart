@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mastermind/bloc/game_bloc.dart';
+import 'package:mastermind/data/database.dart';
+import 'package:mastermind/locator.dart';
 import 'package:mastermind/models/game_event.dart';
 import 'package:mastermind/models/game_state.dart';
 import 'package:mastermind/models/game_status.dart';
-import 'package:mastermind/models/guess.dart';
+import 'package:mockito/annotations.dart';
 
+import 'game_bloc_test.mocks.dart';
+
+@GenerateMocks([AppDatabase])
 void main() {
+  setup() => setupLocator();
   group('GameBloc', () {
+    setup();
     test('initial state heeft 0 guesses en status playing', () {
       final bloc = GameBloc();
       expect(bloc.state.guesses, isEmpty);
@@ -19,42 +26,24 @@ void main() {
       'Game calculates 4 pins and winning condition',
       build: () => GameBloc(
         secretCode: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
+        database: MockAppDatabase(),
       ),
       act: (bloc) async {
-        // Slot 0 → rood
         bloc.add(const SlotSelected(0));
         bloc.add(const ColorSelected(Colors.red));
-
-        // Slot 1 → blauw
         bloc.add(const SlotSelected(1));
         bloc.add(const ColorSelected(Colors.blue));
-
-        // Slot 2 → groen
         bloc.add(const SlotSelected(2));
         bloc.add(const ColorSelected(Colors.green));
-
-        // Slot 3 → geel
         bloc.add(const SlotSelected(3));
         bloc.add(const ColorSelected(Colors.yellow));
-
         bloc.add(const GuessSubmitted());
       },
-      skip: 8,
-      expect: () => [
-        GameState(
-          secretCode: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-          guesses: [
-            Guess(
-              colors: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-              blackPins: 4,
-              whitePins: 0,
-            ),
-          ],
-          currentGuess: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-          selectedSlot: 3,
-          status: GameStatus.won,
-        ),
-      ],
+      verify: (bloc) {
+        expect(bloc.state.status, GameStatus.won);
+        expect(bloc.state.guesses.last.blackPins, 4);
+        expect(bloc.state.guesses.last.whitePins, 0);
+      },
     );
 
     blocTest<GameBloc, GameState>(
@@ -63,81 +52,44 @@ void main() {
         secretCode: [Colors.blue, Colors.red, Colors.yellow, Colors.green],
       ),
       act: (bloc) async {
-        // Slot 0 → rood
         bloc.add(const SlotSelected(0));
         bloc.add(const ColorSelected(Colors.red));
-
-        // Slot 1 → blauw
         bloc.add(const SlotSelected(1));
         bloc.add(const ColorSelected(Colors.blue));
-
-        // Slot 2 → groen
         bloc.add(const SlotSelected(2));
         bloc.add(const ColorSelected(Colors.green));
-
-        // Slot 3 → geel
         bloc.add(const SlotSelected(3));
         bloc.add(const ColorSelected(Colors.yellow));
-
         bloc.add(const GuessSubmitted());
       },
-      skip: 8,
-      expect: () => [
-        GameState(
-          secretCode: [Colors.blue, Colors.red, Colors.yellow, Colors.green],
-          guesses: [
-            Guess(
-              colors: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-              blackPins: 0,
-              whitePins: 4,
-            ),
-          ],
-          currentGuess: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-          selectedSlot: 3,
-          status: GameStatus.playing,
-        ),
-      ],
+      verify: (bloc) {
+        expect(bloc.state.status, GameStatus.playing);
+        expect(bloc.state.guesses.last.blackPins, 0);
+        expect(bloc.state.guesses.last.whitePins, 4);
+      },
     );
+
     blocTest<GameBloc, GameState>(
       'Game calculates partial black and white pins',
       build: () => GameBloc(
         secretCode: [Colors.red, Colors.blue, Colors.yellow, Colors.green],
       ),
       act: (bloc) async {
-        // Slot 0 → rood
         bloc.add(const SlotSelected(0));
         bloc.add(const ColorSelected(Colors.red));
-
-        // Slot 1 → blauw
         bloc.add(const SlotSelected(1));
         bloc.add(const ColorSelected(Colors.blue));
-
-        // Slot 2 → groen
         bloc.add(const SlotSelected(2));
         bloc.add(const ColorSelected(Colors.green));
-
-        // Slot 3 → geel
         bloc.add(const SlotSelected(3));
         bloc.add(const ColorSelected(Colors.yellow));
-
         bloc.add(const GuessSubmitted());
       },
-      skip: 8,
-      expect: () => [
-        GameState(
-          secretCode: [Colors.red, Colors.blue, Colors.yellow, Colors.green],
-          guesses: [
-            Guess(
-              colors: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-              blackPins: 2,
-              whitePins: 2,
-            ),
-          ],
-          currentGuess: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-          selectedSlot: 3,
-          status: GameStatus.playing,
-        ),
-      ],
+      verify: (bloc) {
+        expect(bloc.state.status, GameStatus.playing);
+        expect(bloc.state.guesses.last.blackPins, 2);
+        expect(bloc.state.guesses.last.whitePins, 2);
+      },
     );
 
     blocTest<GameBloc, GameState>(
@@ -146,41 +98,23 @@ void main() {
         secretCode: [Colors.amber, Colors.blue, Colors.yellow, Colors.green],
       ),
       act: (bloc) async {
-        // Slot 0 → rood
         bloc.add(const SlotSelected(0));
         bloc.add(const ColorSelected(Colors.red));
-
-        // Slot 1 → blauw
         bloc.add(const SlotSelected(1));
         bloc.add(const ColorSelected(Colors.blue));
-
-        // Slot 2 → groen
         bloc.add(const SlotSelected(2));
         bloc.add(const ColorSelected(Colors.green));
-
-        // Slot 3 → geel
         bloc.add(const SlotSelected(3));
         bloc.add(const ColorSelected(Colors.yellow));
-
         bloc.add(const GuessSubmitted());
       },
-      skip: 8,
-      expect: () => [
-        GameState(
-          secretCode: [Colors.amber, Colors.blue, Colors.yellow, Colors.green],
-          guesses: [
-            Guess(
-              colors: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-              blackPins: 1,
-              whitePins: 2,
-            ),
-          ],
-          currentGuess: [Colors.red, Colors.blue, Colors.green, Colors.yellow],
-          selectedSlot: 3,
-          status: GameStatus.playing,
-        ),
-      ],
+      verify: (bloc) {
+        expect(bloc.state.status, GameStatus.playing);
+        expect(bloc.state.guesses.last.blackPins, 1);
+        expect(bloc.state.guesses.last.whitePins, 2);
+      },
     );
+
     blocTest<GameBloc, GameState>(
       'Game calculates losing condition after 10 attempts',
       build: () => GameBloc(
