@@ -9,17 +9,44 @@ import 'package:mastermind/ui/widgets/active_guess_row.dart';
 import 'package:mastermind/ui/widgets/guess_row.dart';
 import 'package:mastermind/ui/widgets/submit_button.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
 
   @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _lastItemKey = GlobalKey();
     return BlocListener<GameBloc, GameState>(
+      listenWhen: (previous, current) =>
+          current.guesses.length > previous.guesses.length,
       listener: (context, state) {
         if (state.status == GameStatus.won) {
           context.go('/won');
         } else if (state.status == GameStatus.lost) {
           context.go('/lost');
+        }
+        if (_scrollController.hasClients) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_lastItemKey.currentContext != null) {
+              Scrollable.ensureVisible(
+                _lastItemKey.currentContext!,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.fastOutSlowIn,
+              );
+            }
+          });
         }
       },
       child: Scaffold(
@@ -47,18 +74,28 @@ class GameScreen extends StatelessWidget {
                   children: [
                     // Guess history
                     Expanded(
-                      child: state.guesses.isEmpty
-                          ? _EmptyState()
-                          : ListView.separated(
-                              padding: const EdgeInsets.only(top: 12),
-                              itemCount: state.guesses.length,
-                              separatorBuilder: (_, _) =>
-                                  const SizedBox(height: 10),
-                              itemBuilder: (context, index) => GuessRow(
-                                guess: state.guesses[index],
-                                attemptNumber: index + 1,
+                      child: ClipRect(
+                        child: state.guesses.isEmpty
+                            ? _EmptyState()
+                            : ListView.separated(
+                                controller: _scrollController,
+                                clipBehavior: Clip.antiAlias,
+                                padding: const EdgeInsets.only(
+                                  bottom: 12,
+                                  top: 12,
+                                ),
+                                itemCount: state.guesses.length,
+                                separatorBuilder: (_, _) =>
+                                    const SizedBox(height: 10),
+                                itemBuilder: (context, index) => GuessRow(
+                                  key: index == state.guesses.length - 1
+                                      ? _lastItemKey
+                                      : null,
+                                  guess: state.guesses[index],
+                                  attemptNumber: index + 1,
+                                ),
                               ),
-                            ),
+                      ),
                     ),
                     const SizedBox(height: 12),
                     ActiveGuessRow(currentGuess: state.currentGuess),
@@ -83,7 +120,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Kies 4 kleuren\nen druk submit',
+        'Choose 4 colors\nand press submit',
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Color(0xFF424242),
