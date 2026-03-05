@@ -9,7 +9,44 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.read<GameBloc>().add(GameEvent.guessSubmitted()),
+      onTap: () {
+        final guessIsNotFilled = context
+            .read<GameBloc>()
+            .state
+            .currentGuess
+            .any((colorOption) => colorOption == null);
+
+        if (guessIsNotFilled) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.orange),
+                  SizedBox(width: 12),
+                  Text(
+                    'Use 4 colors to submit!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: const Color(0xFF1A1A1A),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.orange.withValues(alpha: 0.5)),
+              ),
+              margin: EdgeInsets.all(16),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        } else {
+          context.read<GameBloc>().add(GameEvent.guessSubmitted());
+        }
+      },
       child: Container(
         height: 52,
         decoration: BoxDecoration(

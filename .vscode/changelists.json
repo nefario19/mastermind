@@ -1,0 +1,13 @@
+{
+  "changelists": [
+    {
+      "name": "Default",
+      "files": [
+        "lib/ui/views/game_view.dart",
+        ".vscode/changelists.json",
+        "lib/ui/widgets/asd.dart"
+      ]
+    }
+  ],
+  "active": "Default"
+}
