@@ -23,18 +23,18 @@ const List<Color> colorOptions = [
 class GameBloc extends Bloc<GameEvent, GameState> {
   final AppDatabase db;
   GameBloc({List<Color>? secretCode, AppDatabase? database})
-    : db = database ?? locator<AppDatabase>(),
-      super(
-        secretCode != null
-            ? GameState(
-                secretCode: secretCode,
-                guesses: [],
-                currentGuess: [null, null, null, null],
-                selectedSlot: 0,
-                status: GameStatus.playing,
-              )
-            : _initialState(),
-      ) {
+      : db = database ?? locator<AppDatabase>(),
+        super(
+          secretCode != null
+              ? GameState(
+                  secretCode: secretCode,
+                  guesses: [],
+                  currentGuess: [null, null, null, null],
+                  selectedSlot: 0,
+                  status: GameStatus.playing,
+                )
+              : _initialState(),
+        ) {
     on<ColorSelected>(_onColorSelected);
     on<SlotSelected>(_onSlotSelected);
     on<GuessSubmitted>(_onGuessSubmitted);
@@ -43,14 +43,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   static GameState _initialState() {
     final List<Color> secretCode = [];
-    int numberOfColorsChosen = 0;
-    final gameColors = List<Color>.from(colorOptions);
 
-    while (numberOfColorsChosen < 4) {
-      final randomNumber = Random.secure().nextInt(gameColors.length);
+    for (int i = 0; i < 4; i++) {
+      final randomNumber = Random.secure().nextInt(colorOptions.length);
       secretCode.add(colorOptions.elementAt(randomNumber));
-      gameColors.removeAt(randomNumber);
-      numberOfColorsChosen++;
     }
     return GameState(
       secretCode: secretCode,
@@ -79,9 +75,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   void _onGuessSubmitted(GuessSubmitted event, Emitter<GameState> emit) {
-    final List<Color> filledGuess = state.currentGuess
-        .whereType<Color>()
-        .toList();
+    final List<Color> filledGuess =
+        state.currentGuess.whereType<Color>().toList();
 
     if (filledGuess.length < 4) return;
 

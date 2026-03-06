@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Guess {
 
- List<Color> get colors; int get blackPins; int get whitePins;
+ List<Color> get colors; int get blackPins; int get whitePins; DateTime? get createdAt;
 /// Create a copy of Guess
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $GuessCopyWith<Guess> get copyWith => _$GuessCopyWithImpl<Guess>(this as Guess, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Guess&&const DeepCollectionEquality().equals(other.colors, colors)&&(identical(other.blackPins, blackPins) || other.blackPins == blackPins)&&(identical(other.whitePins, whitePins) || other.whitePins == whitePins));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Guess&&const DeepCollectionEquality().equals(other.colors, colors)&&(identical(other.blackPins, blackPins) || other.blackPins == blackPins)&&(identical(other.whitePins, whitePins) || other.whitePins == whitePins)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(colors),blackPins,whitePins);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(colors),blackPins,whitePins,createdAt);
 
 @override
 String toString() {
-  return 'Guess(colors: $colors, blackPins: $blackPins, whitePins: $whitePins)';
+  return 'Guess(colors: $colors, blackPins: $blackPins, whitePins: $whitePins, createdAt: $createdAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $GuessCopyWith<$Res>  {
   factory $GuessCopyWith(Guess value, $Res Function(Guess) _then) = _$GuessCopyWithImpl;
 @useResult
 $Res call({
- List<Color> colors, int blackPins, int whitePins
+ List<Color> colors, int blackPins, int whitePins, DateTime? createdAt
 });
 
 
@@ -62,12 +62,13 @@ class _$GuessCopyWithImpl<$Res>
 
 /// Create a copy of Guess
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? colors = null,Object? blackPins = null,Object? whitePins = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? colors = null,Object? blackPins = null,Object? whitePins = null,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
 colors: null == colors ? _self.colors : colors // ignore: cast_nullable_to_non_nullable
 as List<Color>,blackPins: null == blackPins ? _self.blackPins : blackPins // ignore: cast_nullable_to_non_nullable
 as int,whitePins: null == whitePins ? _self.whitePins : whitePins // ignore: cast_nullable_to_non_nullable
-as int,
+as int,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Color> colors,  int blackPins,  int whitePins)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Color> colors,  int blackPins,  int whitePins,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Guess() when $default != null:
-return $default(_that.colors,_that.blackPins,_that.whitePins);case _:
+return $default(_that.colors,_that.blackPins,_that.whitePins,_that.createdAt);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.colors,_that.blackPins,_that.whitePins);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Color> colors,  int blackPins,  int whitePins)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Color> colors,  int blackPins,  int whitePins,  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Guess():
-return $default(_that.colors,_that.blackPins,_that.whitePins);case _:
+return $default(_that.colors,_that.blackPins,_that.whitePins,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.colors,_that.blackPins,_that.whitePins);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Color> colors,  int blackPins,  int whitePins)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Color> colors,  int blackPins,  int whitePins,  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Guess() when $default != null:
-return $default(_that.colors,_that.blackPins,_that.whitePins);case _:
+return $default(_that.colors,_that.blackPins,_that.whitePins,_that.createdAt);case _:
   return null;
 
 }
@@ -208,7 +209,7 @@ return $default(_that.colors,_that.blackPins,_that.whitePins);case _:
 
 
 class _Guess extends Guess {
-  const _Guess({required final  List<Color> colors, required this.blackPins, required this.whitePins}): _colors = colors,super._();
+  const _Guess({required final  List<Color> colors, required this.blackPins, required this.whitePins, this.createdAt = null}): _colors = colors,super._();
   
 
  final  List<Color> _colors;
@@ -220,6 +221,7 @@ class _Guess extends Guess {
 
 @override final  int blackPins;
 @override final  int whitePins;
+@override@JsonKey() final  DateTime? createdAt;
 
 /// Create a copy of Guess
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +233,16 @@ _$GuessCopyWith<_Guess> get copyWith => __$GuessCopyWithImpl<_Guess>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Guess&&const DeepCollectionEquality().equals(other._colors, _colors)&&(identical(other.blackPins, blackPins) || other.blackPins == blackPins)&&(identical(other.whitePins, whitePins) || other.whitePins == whitePins));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Guess&&const DeepCollectionEquality().equals(other._colors, _colors)&&(identical(other.blackPins, blackPins) || other.blackPins == blackPins)&&(identical(other.whitePins, whitePins) || other.whitePins == whitePins)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_colors),blackPins,whitePins);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_colors),blackPins,whitePins,createdAt);
 
 @override
 String toString() {
-  return 'Guess(colors: $colors, blackPins: $blackPins, whitePins: $whitePins)';
+  return 'Guess(colors: $colors, blackPins: $blackPins, whitePins: $whitePins, createdAt: $createdAt)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$GuessCopyWith<$Res> implements $GuessCopyWith<$Res> {
   factory _$GuessCopyWith(_Guess value, $Res Function(_Guess) _then) = __$GuessCopyWithImpl;
 @override @useResult
 $Res call({
- List<Color> colors, int blackPins, int whitePins
+ List<Color> colors, int blackPins, int whitePins, DateTime? createdAt
 });
 
 
@@ -268,12 +270,13 @@ class __$GuessCopyWithImpl<$Res>
 
 /// Create a copy of Guess
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? colors = null,Object? blackPins = null,Object? whitePins = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? colors = null,Object? blackPins = null,Object? whitePins = null,Object? createdAt = freezed,}) {
   return _then(_Guess(
 colors: null == colors ? _self._colors : colors // ignore: cast_nullable_to_non_nullable
 as List<Color>,blackPins: null == blackPins ? _self.blackPins : blackPins // ignore: cast_nullable_to_non_nullable
 as int,whitePins: null == whitePins ? _self.whitePins : whitePins // ignore: cast_nullable_to_non_nullable
-as int,
+as int,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

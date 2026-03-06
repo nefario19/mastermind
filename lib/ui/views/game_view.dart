@@ -27,7 +27,6 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _lastItemKey = GlobalKey();
     return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) =>
           current.guesses.length > previous.guesses.length,
@@ -39,13 +38,11 @@ class _GameScreenState extends State<GameScreen> {
         }
         if (_scrollController.hasClients) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_lastItemKey.currentContext != null) {
-              Scrollable.ensureVisible(
-                _lastItemKey.currentContext!,
-                duration: Duration(milliseconds: 300),
-                curve: Curves.fastOutSlowIn,
-              );
-            }
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.fastOutSlowIn,
+            );
           });
         }
       },
@@ -85,12 +82,10 @@ class _GameScreenState extends State<GameScreen> {
                                   top: 12,
                                 ),
                                 itemCount: state.guesses.length,
-                                separatorBuilder: (_, _) =>
+                                separatorBuilder: (context, index) =>
                                     const SizedBox(height: 10),
                                 itemBuilder: (context, index) => GuessRow(
-                                  key: index == state.guesses.length - 1
-                                      ? _lastItemKey
-                                      : null,
+                                  key: ValueKey('guess_row_$index'),
                                   guess: state.guesses[index],
                                   attemptNumber: index + 1,
                                 ),
