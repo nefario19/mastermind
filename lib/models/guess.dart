@@ -12,5 +12,6 @@ abstract class Guess with _$Guess {
     required List<Color> colors,
     required int blackPins,
     required int whitePins,
+    @Default(null) DateTime? createdAt,
   }) = _Guess;
 }
